@@ -22,7 +22,7 @@ class AdeeptAWR():
         self.video_output = SplitFrames(self.connections.video_file)
         self.camera.start_recording(self.video_output, format='mjpeg')
         while self.camera_on:
-            continue 
+            continue
         self.camera.stop_recording()
         self.connections.video_stream.write(struct.pack('<L', 0))
 
@@ -37,7 +37,7 @@ class AdeeptAWR():
         self.camera_on = False
 
 class SplitFrames(video_file):
-    def __init__(self, ):
+    def __init__(self, video_file):
         self.video_file = video_file
         self.stream = io.BytesIO()
         self.count = 0
@@ -68,6 +68,7 @@ class SocketConnections():
 
         self.status_stream = socket.socket()
         self.video_stream = socket.socket()
+        self.video_file = ''
 
         def wait_for_client_connection(self):
             self.command_sock.listen(0)
