@@ -4,6 +4,9 @@ import struct
 import numpy
 import cv2
 
+dummy_command_socket = socket.socket()
+dummy_command_socket.connect('192.168.0.234', 10617)
+
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
