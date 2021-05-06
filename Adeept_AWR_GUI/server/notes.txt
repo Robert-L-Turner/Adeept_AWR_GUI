@@ -1,0 +1,10 @@
+Server start
+
+Create AP
+
+Listen for Socket connection
+	Create inbound socket
+	-> All robot commands
+	Create outbound sockets to GUI for 
+	-> Camera stream
+	-> PC Data
