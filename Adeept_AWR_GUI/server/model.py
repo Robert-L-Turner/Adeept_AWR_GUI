@@ -12,6 +12,11 @@ class AdeeptAWR():
         self.connections = SocketConnections()
         self.camera = picamera.PiCamera(resolution=(1280, 720), framerate=30)
         self.camera_on = False
+        self.start = None
+        self.finish = None
+
+        self.video_stream_threading = None
+        self.video_output = None
 
     def __exit__(self):
         self.camera.close()
@@ -75,11 +80,15 @@ class SocketConnections(object):
         self.command_sock.listen(0)
 
         self.status_stream = socket.socket()
+
         self.video_stream = socket.socket()
+        self.command_stream = None
+        self.client = None
+        self.video_file = None
 
         def wait_for_client_connection():
-            self.connection, self.client = self.command_sock.accept()
-            # self.status_stream.connect((self.client[0], 10618))
+            self.command_stream, self.client = self.command_sock.accept()
+            self.status_stream.connect((self.client[0], 10618))
             self.video_stream.connect((self.client[0], 10619))
             self.video_file = self.video_stream.makefile('wb')
 
