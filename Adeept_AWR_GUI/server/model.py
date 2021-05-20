@@ -7,54 +7,94 @@ import picamera
 
 
 # TODO Robot Class
+
 class AdeeptAWR():
-    def __init__(self):
-        self.connections = SocketConnections()
-        self.camera = picamera.PiCamera(resolution=(1280, 720), framerate=30)
-        self.camera_on = False
-        self.start = None
-        self.finish = None
+    """ Parent Class for Robot """
 
-        self.video_stream_threading = None
-        self.video_output = None
+    # Create initial sockets and threaded connection lock
 
-    def __exit__(self):
-        self.camera.close()
+    command_sock = socket.socket()
+    command_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    command_sock.bind(('0.0.0.0', 10617))
+    command_sock.listen(0)
+    command_stream = None
 
-# TODO Camera object
+    status_sock = socket.socket()
+    video_sock = socket.socket()
+    video_file = None
+
+    def wait_for_client_connection(self):
+        """ Target function to thread socket connections """
+        self.command_stream, self.client = self.command_sock.accept()
+        print(self.client)
+        self.status_sock.connect((self.client[0], 10618))
+        self.video_sock.connect((self.client[0], 10619))
+        self.video_file = self.video_sock.makefile('wb')
+        print(self.video_file)
+    client = None
+
+# TODO Camera
+
+    # Create Camera attributes and threaded streaming method
+
+    camera_on = False
+    video_output = None
+    start_timer = None
+    end_timer = None
 
     def video_streaming(self):
-        self.video_output = SplitFrames(self.connections.video_file)
-        self.start = time.time()
+        """ Threading target function to initialize recording """
+        self.video_output = SplitFrames(self.video_file)
+        self.start_timer = time.time()
         self.camera.start_recording(self.video_output, format='mjpeg')
         while self.camera_on:
             continue
         self.camera.stop_recording()
-        self.connections.video_file.write(struct.pack('<L', 0))
+        self.video_file.write(struct.pack('<L', 0))
 
     def start_camera(self):
+        """ Setter method to start video stream """
+        print("Starting camera......")
         self.camera_on = True
         self.video_stream_threading = \
             threading.Thread(target=self.video_streaming)
-        self.video_stream_threading.setDaemon(False)
+        self.video_stream_threading.setDaemon(True)
+
         self.video_stream_threading.start()
 
     def stop_camera(self):
+        """ Setter method to stop video stream """
+        print("Stopping camera......")
         self.camera_on = False
-        self.finish = time.time()
-        print('Sent %d images in %d seconds at %.2ffps' % 
-              (self.video_output.count, self.finish-self.start,
+        self.end_timer = time.time()
+        print('Sent %d images in %d seconds at %.2ffps' %
+              (self.video_output.count, self.end_timer-self.start_timer,
                self.video_output.count /
-               (self.finish-self.start)))
+               (self.end_timer-self.start_timer)))
+
+    def __init__(self, resolution=(1280, 720), framerate=30):
+
+        self.camera = picamera.PiCamera(resolution=resolution,
+                                        framerate=framerate)
 
 
 class SplitFrames(object):
+    """ Class to receive camera video write calls, write to buffer """
+    stream = io.BytesIO()
+    count = 0
+
     def __init__(self, video_file):
         self.video_file = video_file
-        self.stream = io.BytesIO()
-        self.count = 0
 
     def write(self, buf):
+        """
+        Write method used by camera.start_recording()
+
+        Writes recording buffer to BytesIO stream until jpg magic bytes are
+        found.  Then writes the size and stream contents to the socket file.
+        Increments counter for FPS calculations.
+
+        """
         if buf.startswith(b'\xff\xd8'):
             # Start of new frame; send the old one's length
             # then the data
@@ -72,33 +112,29 @@ class SplitFrames(object):
 # TODO Wireless hotspot
 
 # TODO Stream connection
-class SocketConnections(object):
-    def __init__(self):
-        self.command_sock = socket.socket()
-        self.command_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.command_sock.bind(('0.0.0.0', 10617))
-        self.command_sock.listen(0)
-
-        self.status_stream = socket.socket()
-
-        self.video_stream = socket.socket()
-        self.command_stream = None
-        self.client = None
-        self.video_file = None
-
-        def wait_for_client_connection():
-            self.command_stream, self.client = self.command_sock.accept()
-            self.status_stream.connect((self.client[0], 10618))
-            self.video_stream.connect((self.client[0], 10619))
-            self.video_file = self.video_stream.makefile('wb')
-
-        self.client_connection_threading = \
-            threading.Thread(target=wait_for_client_connection, args=())
-        self.client_connection_threading.setDaemon(True)
-        self.client_connection_threading.start()
 
 # TODO Led object
 
 # TODO Motor object
 
 # TODO Speaker object
+
+if __name__ == "__main__":
+    robot = AdeeptAWR()
+    client_connection_threading = \
+        threading.Thread(target=robot.wait_for_client_connection)
+    client_connection_threading.setDaemon(True)
+    client_connection_threading.start()
+    while not robot.client:
+        print("No client connected")
+        time.sleep(1)
+    robot.start_camera()
+    time.sleep(2)
+    try:
+        while True:
+            print("Streaming video: ", robot.video_output.stream.tell(),
+                  robot.video_output.count)
+    except KeyboardInterrupt:
+        print("Quitting")
+        robot.stop_camera()
+
