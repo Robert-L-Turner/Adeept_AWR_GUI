@@ -26,12 +26,18 @@ class AdeeptAWR():
     def wait_for_client_connection(self):
         """ Target function to thread socket connections """
         self.command_stream, self.client = self.command_sock.accept()
-        print(self.client)
+        print("Command socket connected to: ", self.client)
         self.status_sock.connect((self.client[0], 10618))
         self.video_sock.connect((self.client[0], 10619))
         self.video_file = self.video_sock.makefile('wb')
-        print(self.video_file)
     client = None
+
+    def start_connections(self):
+        print("Starting connection threading...")
+        client_connection_threading = \
+            threading.Thread(target=self.wait_for_client_connection,
+                             daemon=True)
+        client_connection_threading.start()
 
 # TODO Camera
 
@@ -44,6 +50,7 @@ class AdeeptAWR():
 
     def video_streaming(self):
         """ Threading target function to initialize recording """
+        print("Starting video threading...")
         self.video_output = SplitFrames(self.video_file)
         self.start_timer = time.time()
         self.camera.start_recording(self.video_output, format='mjpeg')
@@ -56,11 +63,9 @@ class AdeeptAWR():
         """ Setter method to start video stream """
         print("Starting camera......")
         self.camera_on = True
-        self.video_stream_threading = \
-            threading.Thread(target=self.video_streaming)
-        self.video_stream_threading.setDaemon(True)
-
-        self.video_stream_threading.start()
+        video_stream_threading = \
+            threading.Thread(target=self.video_streaming, daemon=True)
+        video_stream_threading.start()
 
     def stop_camera(self):
         """ Setter method to stop video stream """
@@ -76,7 +81,7 @@ class AdeeptAWR():
 
         self.camera = picamera.PiCamera(resolution=resolution,
                                         framerate=framerate)
-
+        self.start_connections()
 
 class SplitFrames(object):
     """ Class to receive camera video write calls, write to buffer """
@@ -105,6 +110,7 @@ class SplitFrames(object):
                 self.stream.seek(0)
                 self.video_file.write(self.stream.read(size))
                 self.count += 1
+                print("Writing frame %d", self.count)
                 self.stream.seek(0)
         self.stream.write(buf)
 
@@ -121,19 +127,16 @@ class SplitFrames(object):
 
 if __name__ == "__main__":
     robot = AdeeptAWR()
-    client_connection_threading = \
-        threading.Thread(target=robot.wait_for_client_connection)
-    client_connection_threading.setDaemon(True)
-    client_connection_threading.start()
-    while not robot.client:
-        print("No client connected")
-        time.sleep(1)
+    if not robot.client:
+        print("No client connected", end=" ")
+        while not robot.client:
+            print(".", end=" ")
+            time.sleep(1)
     robot.start_camera()
     time.sleep(2)
     try:
         while True:
-            print("Streaming video: ", robot.video_output.stream.tell(),
-                  robot.video_output.count)
+            pass
     except KeyboardInterrupt:
         print("Quitting")
         robot.stop_camera()
