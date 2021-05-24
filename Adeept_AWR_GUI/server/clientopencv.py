@@ -7,6 +7,11 @@ import cv2
 dummy_command_socket = socket.socket()
 dummy_command_socket.connect(('192.168.0.234', 10617))
 
+dummy_status = socket.socket()
+dummy_status.bind(('0.0.0.0', 10618))
+dummy_status.listen(0)
+status_connection = dummy_status.accept()[0]
+
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
