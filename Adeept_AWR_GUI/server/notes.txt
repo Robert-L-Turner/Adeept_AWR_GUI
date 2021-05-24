@@ -1,3 +1,7 @@
+-----------
+May 20
+-----------
+
 Rewrote classes to remove connection class and 'self.' instantiation in the __init__ method.
 
 Added docstrings
@@ -7,3 +11,11 @@ Can't get threading to start within class definition due to argument passing
 Connection is succesful with view.py
 
 Debug print shows static stream length and only 6 frames sent.  Suspect error on view.py
+
+-----------
+May 23
+-----------
+
+Re-integrated threading into class start methods.
+
+Coding view.py to initialize gui.  Initialization but without any frames received.
