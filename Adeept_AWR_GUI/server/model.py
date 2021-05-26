@@ -5,7 +5,6 @@ import time
 import threading
 import picamera
 
-
 # TODO Robot Class
 
 class AdeeptAWR():
@@ -43,34 +42,21 @@ class AdeeptAWR():
 
     # Create Camera attributes and threaded streaming method
 
-    camera_on = False
     video_output = None
     start_timer = None
     end_timer = None
 
-    def video_streaming(self):
-        """ Threading target function to initialize recording """
+    def start_camera(self):
+        """ Setter method to start video stream """
         print("Starting video threading...")
         self.video_output = SplitFrames(self.video_file)
         self.start_timer = time.time()
         self.camera.start_recording(self.video_output, format='mjpeg')
-        while self.camera_on:
-            continue
-        self.camera.stop_recording()
-        self.video_file.write(struct.pack('<L', 0))
-
-    def start_camera(self):
-        """ Setter method to start video stream """
-        print("Starting camera......")
-        self.camera_on = True
-        video_stream_threading = \
-            threading.Thread(target=self.video_streaming, daemon=True)
-        video_stream_threading.start()
 
     def stop_camera(self):
         """ Setter method to stop video stream """
         print("Stopping camera......")
-        self.camera_on = False
+        self.camera.stop_recording()
         self.end_timer = time.time()
         print('Sent %d images in %d seconds at %.2ffps' %
               (self.video_output.count, self.end_timer-self.start_timer,
@@ -81,6 +67,7 @@ class AdeeptAWR():
 
         self.camera = picamera.PiCamera(resolution=resolution,
                                         framerate=framerate)
+        print(self.camera.resolution)
         self.start_connections()
 
 class SplitFrames(object):
@@ -126,18 +113,16 @@ class SplitFrames(object):
 # TODO Speaker object
 
 if __name__ == "__main__":
-    robot = AdeeptAWR()
+    robot = AdeeptAWR()#resolution=(640, 480))
     if not robot.client:
         print("No client connected", end=" ")
         while not robot.client:
             print(".", end=" ")
             time.sleep(1)
     robot.start_camera()
-    time.sleep(2)
     try:
         while True:
             pass
     except KeyboardInterrupt:
         print("Quitting")
         robot.stop_camera()
-

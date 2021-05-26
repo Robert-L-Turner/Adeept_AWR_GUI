@@ -19,3 +19,9 @@ May 23
 Re-integrated threading into class start methods.
 
 Coding view.py to initialize gui.  Initialization but without any frames received.
+
+-----------
+May 26
+-----------
+
+FPS with AWR -> Ethernet & Laptop -> Wifi was down to 18 fps.  Need to test camera resolution / vs wifi bandwidth capacity.
