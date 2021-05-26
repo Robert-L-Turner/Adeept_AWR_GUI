@@ -5,37 +5,52 @@ import struct
 import io
 import threading
 import time
+from queue import Queue
+
 
 class AdeeptAWRController(object):
-    def __init__(self):
-        self.connections = self.SocketConnections()
-        self.stream = self.Stream(self.connections)
 
-    class SocketConnections(object):
-        def __init__(self):
-            self.status_socket = socket.socket()
-            self.status_socket.bind(('0.0.0.0', 10618))
-            self.status_socket.listen(0)
+    status_socket = socket.socket()
+    status_socket.setsockopt(socket.SOL_SOCKET,
+                             socket.SO_REUSEADDR, 1)
+    status_socket.bind(('0.0.0.0', 10618))
+    status_socket.listen(0)
+    status_stream = None
 
-            self.video_socket = socket.socket()
-            self.video_socket.bind(('0.0.0.0', 10619))
-            self.video_socket.listen(0)
+    video_socket = socket.socket()
+    video_socket.setsockopt(socket.SOL_SOCKET,
+                            socket.SO_REUSEADDR, 1)
+    video_socket.bind(('0.0.0.0', 10619))
+    video_socket.listen(0)
+    video_stream = None
+    video_file = None
 
-            command_socket = socket.socket()
-            command_socket.connect(('192.168.0.234', 10617))
-            print("command socket connected")
+    command_socket = socket.socket()
 
-            self.video_stream, self.robot = self.video_socket.accept()
-            self.video_file = self.video_stream.makefile('rb')
-            print("video_stream connection established")
-            print(self.robot, self.video_file)
+    def wait_for_connection(self):
+        self.command_socket.connect(('192.168.0.234', 10617))
+        print("command socket connected")
 
-            self.status_stream, self.robot = self.status_socket.accept()
-            print("status_stream connection established", self.robot)
+        self.video_stream, _ = self.video_socket.accept()
+        self.video_file = self.video_stream.makefile('rb')
+        print("video_stream connection established")
+
+        self.status_stream, _ = self.status_socket.accept()
+        print("status_stream connection established")
+
+    def start_connections(self):
+        print("Starting connection threading...")
+        client_connection_threading = \
+            threading.Thread(target=self.wait_for_connection,
+                             daemon=True)
+        client_connection_threading.start()
 
     class Stream(object):
-        def __init__(self, connections):
-            self.connections = connections
+        stream_queue = Queue()
+
+        def __init__(self, video_file):
+            self.video_file = video_file
+            print(self.video_file)
             self.image = None
 
             self.frame_count = 0
@@ -48,9 +63,7 @@ class AdeeptAWRController(object):
             self.box_y = None
             self.radius = None
 
-            self.video_stream_on = False
             self.find_color = False
-            print(self.connections.video_file)
 
         def opencv_find_color(self):
             # Convert captured images to HSV color space
@@ -76,53 +89,40 @@ class AdeeptAWRController(object):
                 ((self.box_x, self.box_y), self.radius) = cv2.minEnclosingCircle(c)
 
         def video_stream(self):
-            print("Starting video stream...", self.video_stream_on)
-            while self.video_stream_on:
-                self.image_len = struct.unpack('<L', self.connections.video_file.read(struct.calcsize('<L')))[0]
-                self.image_stream = io.BytesIO(self.connections.video_file.read(self.image_len))
-                self.image = cv2.imdecode(numpy.fromstring(self.image_stream.read(), numpy.uint8), 1)
-                '''
-                if self.frame_count == 30 & self.find_color:
-                    self.opencv_find_color()
-                    self.frame_count = 0
-                if self.color_found:
-                    # Write text on the screen:Target Detected
-                    cv2.putText(self.image, 'Target Detected', (40, 60), self.font,
-                                0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                    # Draw a frame around the target color object
-                    cv2.rectangle(self.image, (int(self.box_x-self.radius),
-                                               int(self.box_y+self.radius)),
-                                  (int(self.box_x+self.radius),
-                                   int(self.box_y-self.radius)),
-                                  (255, 255, 255), 1)
-                else:
-                    cv2.putText(self.image, 'Target Detecting', (40, 60),
-                                self.font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                '''
+            print("Starting video stream...")
+            while True:
+                self.image_len = struct.unpack('<L',
+                                               self.video_file.read
+                                               (struct.calcsize('<L')))[0]
+                self.image_stream = io.BytesIO(self.video_file.read
+                                               (self.image_len))
+                self.image = cv2.imdecode(numpy.frombuffer(
+                    self.image_stream.read(), numpy.uint8), 1)
                 self.frame_count += 1
-                cv2.imshow("Stream", self.image)
-                cv2.waitKey(1)
-
-        def start_find_color(self):
-            self.find_color = True
-
-        def stop_find_color(self):
-            self.find_color = False
+                self.stream_queue.put(self.image)
+                #cv2.imshow("Stream", self.image)
+                #cv2.waitKey(1)
 
         def start_video_stream(self):
             print("Starting video thread...")
-            self.video_stream_on = True
             self.start_timer = time.time()
             video_stream_threading = \
                 threading.Thread(target=self.video_stream, daemon=True)
             video_stream_threading.start()
 
         def stop_video_stream(self):
-            self.video_stream_on = False
             self.end_timer = time.time()
             print('Sent %d images in %d seconds at %.2ffps' %
                   (self.frame_count, self.end_timer-self.start_timer,
                    self.frame_count/(self.end_timer-self.start_timer)))
+
+    def __init__(self):
+        self.start_connections()
+        while self.video_stream is None:
+            pass
+        self.stream = self.Stream(self.video_file)
+        self.stream.start_video_stream()
+
 
 # TODO Video Streaming
 
@@ -136,12 +136,12 @@ class AdeeptAWRController(object):
 
 if __name__ == "__main__":
     gui = AdeeptAWRController()
-    gui.stream.start_video_stream()
     try:
         while True:
-            pass
+            frame = gui.stream.stream_queue.get()
+            cv2.imshow("Frame", frame)
+            cv2.waitKey(1)
     except KeyboardInterrupt:
         gui.stream.stop_video_stream()
-        gui.connections.video_stream.close()
-        gui.connections.status_stream.close()
-
+        gui.video_stream.close()
+        gui.status_stream.close()
