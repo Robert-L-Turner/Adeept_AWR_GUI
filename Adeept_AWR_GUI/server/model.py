@@ -38,16 +38,14 @@ class AdeeptAWR():
                              daemon=True)
         client_connection_threading.start()
 
-    video_output = None
     start_timer = None
     end_timer = None
 
     def start_camera(self):
         """ Setter method to start video stream """
         print("Starting video threading...")
-        self.video_output = self.SplitFrames(self.video_file)
         self.start_timer = time.time()
-        self.camera.start_recording(self.video_output, format='mjpeg')
+        self.camera.start_recording(self, format='mjpeg')
 
     def stop_camera(self):
         """ Setter method to stop video stream """
@@ -55,9 +53,37 @@ class AdeeptAWR():
         self.camera.stop_recording()
         self.end_timer = time.time()
         print('Sent %d images in %d seconds at %.2ffps' %
-              (self.video_output.count, self.end_timer-self.start_timer,
-               self.video_output.count /
+              (self.count, self.end_timer-self.start_timer,
+               self.count /
                (self.end_timer-self.start_timer)))
+
+    stream = io.BytesIO()
+    count = 0
+
+    def write(self, buf):
+        """
+        Custom write method used by camera.start_recording() to split mjpeg
+        frames and send to socket fiel.
+
+        Writes recording buffer to BytesIO stream until jpg magic bytes are
+        found. Then writes the size and stream contents to the socket file.
+
+        Increments counter for FPS calculations.
+
+        """
+        if buf.startswith(b'\xff\xd8'):
+            # Start of new frame; send the old one's length
+            # then the data
+            size = self.stream.tell()
+            if size > 0:
+                self.video_file.write(struct.pack('<L', size))
+                self.video_file.flush()
+                self.stream.seek(0)
+                self.video_file.write(self.stream.read(size))
+                self.count += 1
+                print("Writing frame # ", self.count)
+                self.stream.seek(0)
+        self.stream.write(buf)
 
     def __init__(self, resolution=(1280, 720), framerate=30):
 
@@ -65,38 +91,6 @@ class AdeeptAWR():
                                         framerate=framerate)
         self.start_connections()
 
-    class SplitFrames(object):
-        """ Class to receive camera video write calls, write to buffer """
-        stream = io.BytesIO()
-        count = 0
-
-        def __init__(self, video_file):
-            self.video_file = video_file
-
-        def write(self, buf):
-            """
-            Custom write method used by camera.start_recording() to split mjpeg
-            frames and send to socket fiel.
-
-            Writes recording buffer to BytesIO stream until jpg magic bytes are
-            found. Then writes the size and stream contents to the socket file.
-
-            Increments counter for FPS calculations.
-
-            """
-            if buf.startswith(b'\xff\xd8'):
-                # Start of new frame; send the old one's length
-                # then the data
-                size = self.stream.tell()
-                if size > 0:
-                    self.video_file.write(struct.pack('<L', size))
-                    self.video_file.flush()
-                    self.stream.seek(0)
-                    self.video_file.write(self.stream.read(size))
-                    self.count += 1
-                    print("Writing frame %d", self.count)
-                    self.stream.seek(0)
-            self.stream.write(buf)
 
 
 # TODO Wireless hotspot
