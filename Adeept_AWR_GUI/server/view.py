@@ -5,7 +5,7 @@ import struct
 import io
 import threading
 import time
-from queue import Queue
+from collections import deque
 
 
 class AdeeptAWRController(object):
@@ -46,11 +46,10 @@ class AdeeptAWRController(object):
         client_connection_threading.start()
 
     class Stream(object):
-        stream_queue = Queue()
+        stream_queue: deque = deque(maxlen=1)
 
         def __init__(self, video_file):
             self.video_file = video_file
-            print(self.video_file)
             self.image = None
 
             self.frame_count = 0
@@ -99,7 +98,7 @@ class AdeeptAWRController(object):
                 self.image = cv2.imdecode(numpy.frombuffer(
                     self.image_stream.read(), numpy.uint8), 1)
                 self.frame_count += 1
-                self.stream_queue.put(self.image)
+                self.stream_queue.append(self.image)
                 #cv2.imshow("Stream", self.image)
                 #cv2.waitKey(1)
 
@@ -138,9 +137,10 @@ if __name__ == "__main__":
     gui = AdeeptAWRController()
     try:
         while True:
-            frame = gui.stream.stream_queue.get()
-            cv2.imshow("Frame", frame)
-            cv2.waitKey(1)
+            if gui.stream.stream_queue:
+                frame = gui.stream.stream_queue.pop()
+                cv2.imshow("Frame", frame)
+                cv2.waitKey(1)
     except KeyboardInterrupt:
         gui.stream.stop_video_stream()
         gui.video_stream.close()
