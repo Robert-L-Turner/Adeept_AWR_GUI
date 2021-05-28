@@ -25,3 +25,15 @@ May 26
 -----------
 
 FPS with AWR -> Ethernet & Laptop -> Wifi was down to 18 fps.  Need to test camera resolution / vs wifi bandwidth capacity.
+
+FPS restored to normal by threading i/o stream capture separately from image display.  30/30 FPS via ethernet
+
+-----------
+May 28
+-----------
+
+Max FPS is 35 ethernet/wifi connection
+
+Removed print buffering
+
+Changed view.py to deque which discards instead of blocks after max length achieved.

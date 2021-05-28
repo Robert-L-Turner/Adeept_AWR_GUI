@@ -5,7 +5,6 @@ import time
 import threading
 import picamera
 
-# TODO Robot Class
 
 class AdeeptAWR():
     """ Parent Class for Robot """
@@ -32,15 +31,12 @@ class AdeeptAWR():
     client = None
 
     def start_connections(self):
+        """ Threading function to establish client connections """
         print("Starting connection threading...")
         client_connection_threading = \
             threading.Thread(target=self.wait_for_client_connection,
                              daemon=True)
         client_connection_threading.start()
-
-# TODO Camera
-
-    # Create Camera attributes and threaded streaming method
 
     video_output = None
     start_timer = None
@@ -49,7 +45,7 @@ class AdeeptAWR():
     def start_camera(self):
         """ Setter method to start video stream """
         print("Starting video threading...")
-        self.video_output = SplitFrames(self.video_file)
+        self.video_output = self.SplitFrames(self.video_file)
         self.start_timer = time.time()
         self.camera.start_recording(self.video_output, format='mjpeg')
 
@@ -67,39 +63,40 @@ class AdeeptAWR():
 
         self.camera = picamera.PiCamera(resolution=resolution,
                                         framerate=framerate)
-        print(self.camera.resolution)
         self.start_connections()
 
-class SplitFrames(object):
-    """ Class to receive camera video write calls, write to buffer """
-    stream = io.BytesIO()
-    count = 0
+    class SplitFrames(object):
+        """ Class to receive camera video write calls, write to buffer """
+        stream = io.BytesIO()
+        count = 0
 
-    def __init__(self, video_file):
-        self.video_file = video_file
+        def __init__(self, video_file):
+            self.video_file = video_file
 
-    def write(self, buf):
-        """
-        Write method used by camera.start_recording()
+        def write(self, buf):
+            """
+            Custom write method used by camera.start_recording() to split mjpeg
+            frames and send to socket fiel.
 
-        Writes recording buffer to BytesIO stream until jpg magic bytes are
-        found.  Then writes the size and stream contents to the socket file.
-        Increments counter for FPS calculations.
+            Writes recording buffer to BytesIO stream until jpg magic bytes are
+            found. Then writes the size and stream contents to the socket file.
 
-        """
-        if buf.startswith(b'\xff\xd8'):
-            # Start of new frame; send the old one's length
-            # then the data
-            size = self.stream.tell()
-            if size > 0:
-                self.video_file.write(struct.pack('<L', size))
-                self.video_file.flush()
-                self.stream.seek(0)
-                self.video_file.write(self.stream.read(size))
-                self.count += 1
-                print("Writing frame %d", self.count)
-                self.stream.seek(0)
-        self.stream.write(buf)
+            Increments counter for FPS calculations.
+
+            """
+            if buf.startswith(b'\xff\xd8'):
+                # Start of new frame; send the old one's length
+                # then the data
+                size = self.stream.tell()
+                if size > 0:
+                    self.video_file.write(struct.pack('<L', size))
+                    self.video_file.flush()
+                    self.stream.seek(0)
+                    self.video_file.write(self.stream.read(size))
+                    self.count += 1
+                    print("Writing frame %d", self.count)
+                    self.stream.seek(0)
+            self.stream.write(buf)
 
 
 # TODO Wireless hotspot
@@ -113,11 +110,11 @@ class SplitFrames(object):
 # TODO Speaker object
 
 if __name__ == "__main__":
-    robot = AdeeptAWR()#resolution=(640, 480))
+    robot = AdeeptAWR(framerate=49)
     if not robot.client:
-        print("No client connected", end=" ")
+        print("No client connected", end=" ", flush=True)
         while not robot.client:
-            print(".", end=" ")
+            print(".", end=" ", flush=True)
             time.sleep(1)
     robot.start_camera()
     try:
