@@ -1,0 +1,39 @@
+-----------
+May 20
+-----------
+
+Rewrote classes to remove connection class and 'self.' instantiation in the __init__ method.
+
+Added docstrings
+
+Can't get threading to start within class definition due to argument passing
+
+Connection is succesful with view.py
+
+Debug print shows static stream length and only 6 frames sent.  Suspect error on view.py
+
+-----------
+May 23
+-----------
+
+Re-integrated threading into class start methods.
+
+Coding view.py to initialize gui.  Initialization but without any frames received.
+
+-----------
+May 26
+-----------
+
+FPS with AWR -> Ethernet & Laptop -> Wifi was down to 18 fps.  Need to test camera resolution / vs wifi bandwidth capacity.
+
+FPS restored to normal by threading i/o stream capture separately from image display.  30/30 FPS via ethernet
+
+-----------
+May 28
+-----------
+
+Max FPS is 35 ethernet/wifi connection
+
+Removed print buffering
+
+Changed view.py to deque which discards instead of blocks after max length achieved.
