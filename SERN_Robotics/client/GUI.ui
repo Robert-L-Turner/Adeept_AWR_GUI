@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>904</width>
-    <height>861</height>
+    <height>852</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,6 +19,114 @@
   <property name="windowTitle">
    <string>Adeept Robot Controller</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/*
+bg = #000000
+UI_background = #1C1D1E
+UI_background_800 = #3C3E3F
+UI_background_700 = #5B5C5D
+UI_primary = #007596
+UI_primary_dark = #00485E
+UI_primary_light = #1389AF
+UI_secondary = #218573
+UI_secondary_dark = #1C9A61
+UI_secondary_light = #42C087
+
+font_header = Montserrat 19
+font_color_header = #CABA98
+font_nav = Monserrat 13
+font_body1 = Montserrat 12
+font_button = Montserrat 11 bold
+font_color_bg = #FFFFFF
+font_color_bg800 = #C2C2C2
+fong_color_bg700 = #BBB
+
+Accent_secondary = #B3A369
+Accent_secondary1 = #8D7F61
+Accent_positive = #01C38D
+Accent_beaware = #F4BD0C
+Accent_negative = #C93937
+
+Error_dark = #C93937
+Success_dark = #03A077
+Warning_dark = #DCAA0B
+
+*/
+
+QWidget{
+	background-color: #000000;
+}
+
+QFrame{
+	background-color: #1C1D1E
+}
+
+QLabel{
+	color: #C2C2C2;
+	font-family: &quot;Montserrat&quot;;
+	font-size: 12px;
+}
+
+QPushButton, QSpinBox{
+	background-color: #007596;
+	color: #FFFFFF;
+	font-family: &quot;Montserrat&quot;;
+	font-size: 11px;
+    font-weight: bold;
+}
+
+QPushButton:Hover{
+	background-color: #00485E;
+}
+
+QPushButton:Pressed{
+	background-color: #007596;
+}
+
+QSlider{
+	background-color: #1C1D1E;
+}
+
+QSlider::groove:horizontal{
+	background-color: #3C3E3F;
+	height: 5px;
+}
+
+QSlider::handle:horizontal{
+	background: #3C3E3F;
+	width: 10px;
+	margin: -3px 0;
+	border: 0;
+	border-radius: 5px;
+}
+
+QSlider#RedSlider::groove:horizontal{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 0, 0, 255));
+}
+
+QSlider#RedSlider::handle:horizontal{
+	background: rgba(255,0,0,255);
+}
+
+QSlider#GreenSlider::groove:horizontal{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 255, 0, 255));
+}
+
+QSlider#GreenSlider::handle:horizontal{
+	background: rgba(0,255,0,255);
+}
+
+QSlider#BlueSlider::groove:horizontal{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 255, 255));
+}
+
+QSlider#BlueSlider::handle:horizontal{
+	background: rgba(0,0,255,255);
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -28,7 +136,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="StreamFrame">
       <property name="minimumSize">
        <size>
         <width>640</width>
@@ -44,7 +152,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_3">
+     <widget class="QFrame" name="ControlsFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -59,7 +167,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QFrame" name="frame_5">
+        <widget class="QFrame" name="FunctionsFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -79,42 +187,45 @@
           <item>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_3">
+             <widget class="QPushButton" name="Function6Button">
               <property name="text">
                <string>Function6</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="BreathingButton">
               <property name="text">
                <string>Breathing</string>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
             <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_6">
+             <widget class="QPushButton" name="AmbulanceButton">
               <property name="text">
                <string>Ambulance</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="pushButton_5">
+             <widget class="QPushButton" name="FireFighterButton">
               <property name="text">
                <string>Firefighter</string>
               </property>
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton_4">
+             <widget class="QPushButton" name="PoliceButton">
               <property name="text">
                <string>Police</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="DiscoButton">
               <property name="text">
                <string>Disco</string>
               </property>
@@ -126,7 +237,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frame_7">
+        <widget class="QFrame" name="MovementFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -143,42 +254,42 @@
           <item>
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton_16">
+             <widget class="QPushButton" name="TurnLeftButton">
               <property name="text">
                <string>&lt;-</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="pushButton_17">
+             <widget class="QPushButton" name="ForwardButton">
               <property name="text">
                <string>Forward</string>
               </property>
              </widget>
             </item>
             <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_14">
+             <widget class="QPushButton" name="TurnRightButton">
               <property name="text">
                <string>-&gt;</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QPushButton" name="pushButton_18">
+             <widget class="QPushButton" name="LeftButton">
               <property name="text">
                <string>Left</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_15">
+             <widget class="QPushButton" name="BackwardButton">
               <property name="text">
                <string>Backward</string>
               </property>
              </widget>
             </item>
             <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_13">
+             <widget class="QPushButton" name="RightButton">
               <property name="text">
                <string>Right</string>
               </property>
@@ -190,7 +301,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frame_6">
+        <widget class="QFrame" name="CommandsFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -210,42 +321,42 @@
           <item>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton_10">
+             <widget class="QPushButton" name="UltrasonicButton">
               <property name="text">
                <string>Ultrasonic</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QPushButton" name="pushButton_11">
+             <widget class="QPushButton" name="TurboButton">
               <property name="text">
                <string>Turbo</string>
               </property>
              </widget>
             </item>
             <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_8">
+             <widget class="QPushButton" name="FindColorButton">
               <property name="text">
                <string>Find Color</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QPushButton" name="pushButton_12">
+             <widget class="QPushButton" name="WatchDogButton">
               <property name="text">
                <string>Watch Dog</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_9">
+             <widget class="QPushButton" name="HomeButton">
               <property name="text">
                <string>Home</string>
               </property>
              </widget>
             </item>
             <item row="1" column="2">
-             <widget class="QPushButton" name="pushButton_7">
+             <widget class="QPushButton" name="FindLineButton">
               <property name="text">
                <string>Find Line</string>
               </property>
@@ -260,7 +371,13 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_4">
+     <widget class="QFrame" name="CameraArmFrame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -268,131 +385,169 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
+       <item row="1" column="2">
+        <widget class="QLabel" name="ArmExtendLabel">
+         <property name="text">
+          <string>Extend</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLabel" name="CameraLabel">
+         <property name="text">
+          <string>Camera</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QSlider" name="ClawSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSlider" name="ArmSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLabel" name="ArmLabel">
+         <property name="text">
+          <string>Arm</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QSpinBox" name="ArmSpinBox">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="ClawCloseLabel">
+         <property name="text">
+          <string>Close</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QSpinBox" name="ClawSpinBox">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="WristLeftLabel">
+         <property name="text">
+          <string>Left</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QLabel" name="WristLabel">
+         <property name="text">
+          <string>Wrist</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="CameraUpLabel">
+         <property name="text">
+          <string>Up</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QSpinBox" name="WristSpinBox">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSlider" name="WristSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QSpinBox" name="CameraSpinBox">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="ArmRetractLabel">
+         <property name="text">
+          <string>Retract</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QLabel" name="ClawLabel">
+         <property name="text">
+          <string>Claw</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="WristRightLabel">
+         <property name="text">
+          <string>Right</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
-        <widget class="QLabel" name="label_15">
+        <widget class="QLabel" name="CameraDownLabel">
          <property name="text">
           <string>Down</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QSlider" name="horizontalSlider_7">
+        <widget class="QSlider" name="CameraSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_13">
-         <property name="text">
-          <string>Up</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QSpinBox" name="spinBox_7">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>Camera</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_16">
-         <property name="text">
-          <string>Retract</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QSlider" name="horizontalSlider_8">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="label_17">
-         <property name="text">
-          <string>Extend</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QSpinBox" name="spinBox_8">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4">
-        <widget class="QLabel" name="label_18">
-         <property name="text">
-          <string>Arm</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>Left</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QSlider" name="horizontalSlider_9">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="label_20">
-         <property name="text">
-          <string>Right</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <widget class="QSpinBox" name="spinBox_9">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="4">
-        <widget class="QLabel" name="label_21">
-         <property name="text">
-          <string>Wrist</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_23">
-         <property name="text">
-          <string>Close</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QSlider" name="horizontalSlider_10">
-         <property name="maximum">
-          <number>255</number>
+          <number>100</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -400,23 +555,9 @@
         </widget>
        </item>
        <item row="3" column="2">
-        <widget class="QLabel" name="label_22">
+        <widget class="QLabel" name="ClawOpenLabel">
          <property name="text">
           <string>Open</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QSpinBox" name="spinBox_10">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="4">
-        <widget class="QLabel" name="label_24">
-         <property name="text">
-          <string>Claw</string>
          </property>
         </widget>
        </item>
@@ -424,7 +565,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="RGBFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -438,46 +579,58 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="1">
-        <widget class="QSpinBox" name="spinBox">
+       <item row="0" column="0">
+        <widget class="QSlider" name="RedSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="maximum">
           <number>255</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="RedLabel">
          <property name="text">
           <string>Red</string>
          </property>
         </widget>
        </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="GreenLabel">
+         <property name="text">
+          <string>Green</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="1">
-        <widget class="QSpinBox" name="spinBox_2">
+        <widget class="QSpinBox" name="GreenSpinBox">
          <property name="maximum">
           <number>255</number>
          </property>
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="BlueLabel">
          <property name="text">
           <string>Blue</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QSlider" name="horizontalSlider">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="0">
-        <widget class="QSlider" name="horizontalSlider_2">
+        <widget class="QSlider" name="GreenSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="maximum">
           <number>255</number>
          </property>
@@ -486,15 +639,27 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Green</string>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="RedSpinBox">
+         <property name="maximum">
+          <number>255</number>
          </property>
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QSlider" name="horizontalSlider_4">
+        <widget class="QSlider" name="BlueSlider">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="maximum">
           <number>255</number>
          </property>
@@ -504,7 +669,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QSpinBox" name="spinBox_4">
+        <widget class="QSpinBox" name="BlueSpinBox">
          <property name="maximum">
           <number>255</number>
          </property>
@@ -520,9 +685,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>spinBox</sender>
+   <sender>RedSpinBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>horizontalSlider</receiver>
+   <receiver>RedSlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -536,9 +701,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>horizontalSlider</sender>
+   <sender>RedSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>spinBox</receiver>
+   <receiver>RedSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -552,9 +717,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>horizontalSlider_4</sender>
+   <sender>BlueSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>spinBox_4</receiver>
+   <receiver>BlueSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -568,9 +733,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>spinBox_4</sender>
+   <sender>BlueSpinBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>horizontalSlider_4</receiver>
+   <receiver>BlueSlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -584,9 +749,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>horizontalSlider_2</sender>
+   <sender>GreenSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>spinBox_2</receiver>
+   <receiver>GreenSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -600,9 +765,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>spinBox_2</sender>
+   <sender>GreenSpinBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>horizontalSlider_2</receiver>
+   <receiver>GreenSlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -612,6 +777,134 @@
     <hint type="destinationlabel">
      <x>272</x>
      <y>533</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CameraSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CameraSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>397</x>
+     <y>611</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>805</x>
+     <y>611</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CameraSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>CameraSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>805</x>
+     <y>611</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>611</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ArmSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>ArmSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>397</x>
+     <y>639</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>805</x>
+     <y>639</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>WristSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>WristSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>397</x>
+     <y>667</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>805</x>
+     <y>667</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ClawSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>ClawSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>397</x>
+     <y>695</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>805</x>
+     <y>695</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ClawSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>ClawSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>805</x>
+     <y>695</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>695</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ArmSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>ArmSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>805</x>
+     <y>639</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>639</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>WristSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>WristSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>805</x>
+     <y>667</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>667</y>
     </hint>
    </hints>
   </connection>
