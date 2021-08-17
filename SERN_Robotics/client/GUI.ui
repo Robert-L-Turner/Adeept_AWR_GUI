@@ -70,7 +70,7 @@ QLabel{
 	font-size: 12px;
 }
 
-QPushButton, QSpinBox{
+QPushButton, QSpinBox, QMenuBar, QMenu{
 	background-color: #007596;
 	color: #FFFFFF;
 	font-family: &quot;Montserrat&quot;;
@@ -78,11 +78,12 @@ QPushButton, QSpinBox{
     font-weight: bold;
 }
 
-QPushButton:Hover{
+QPushButton:Hover, QMenu::item:selected{
 	background-color: #00485E;
 }
 
-QPushButton:Pressed{
+
+QPushButton,QMenu:Pressed{
 	background-color: #007596;
 }
 
@@ -579,70 +580,10 @@ QSlider#BlueSlider::handle:horizontal{
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QSlider" name="RedSlider">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="RedLabel">
-         <property name="text">
-          <string>Red</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="2">
         <widget class="QLabel" name="GreenLabel">
          <property name="text">
           <string>Green</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="GreenSpinBox">
-         <property name="maximum">
-          <number>255</number>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="BlueLabel">
-         <property name="text">
-          <string>Blue</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QSlider" name="GreenSlider">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QSpinBox" name="RedSpinBox">
-         <property name="maximum">
-          <number>255</number>
          </property>
         </widget>
        </item>
@@ -668,10 +609,70 @@ QSlider#BlueSlider::handle:horizontal{
          </property>
         </widget>
        </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="RedLabel">
+         <property name="text">
+          <string>Red</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="BlueLabel">
+         <property name="text">
+          <string>Blue</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="GreenSpinBox">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QSlider" name="GreenSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="1">
         <widget class="QSpinBox" name="BlueSpinBox">
          <property name="maximum">
           <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="RedSpinBox">
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QSlider" name="RedSlider">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
@@ -681,6 +682,73 @@ QSlider#BlueSlider::handle:horizontal{
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>904</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_Connect">
+    <property name="title">
+     <string>&amp;Connect</string>
+    </property>
+    <addaction name="action_Rasptank"/>
+    <addaction name="actionAWR"/>
+    <addaction name="actionDarkpaw"/>
+    <addaction name="actionIP_Address"/>
+   </widget>
+   <widget class="QMenu" name="menuOpenCV">
+    <property name="title">
+     <string>&amp;OpenCV</string>
+    </property>
+    <addaction name="actionController"/>
+    <addaction name="actionRobot"/>
+   </widget>
+   <addaction name="menu_Connect"/>
+   <addaction name="menuOpenCV"/>
+  </widget>
+  <action name="action_Rasptank">
+   <property name="text">
+    <string>&amp;Rasptank</string>
+   </property>
+  </action>
+  <action name="actionAWR">
+   <property name="text">
+    <string>&amp;AWR</string>
+   </property>
+  </action>
+  <action name="actionDarkpaw">
+   <property name="text">
+    <string>&amp;Darkpaw</string>
+   </property>
+  </action>
+  <action name="actionIP_Address">
+   <property name="text">
+    <string>&amp;IP Address</string>
+   </property>
+  </action>
+  <action name="actionRobot">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Robot</string>
+   </property>
+  </action>
+  <action name="actionController">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Controller</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
